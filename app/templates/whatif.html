@@ -1,0 +1,35 @@
+{% extends "base.html" %}{% block body %}
+<div class="card"><h2>What-if Scenario – Mô phỏng kịch bản kinh doanh</h2>
+<p class="mut">Bước 1–2: chọn cửa hàng và ngày → Bước 3: xem kịch bản ban đầu → Bước 4–6: bật/tắt Promo, chọn StateHoliday → chạy mô phỏng.</p>
+{% if error %}<div class="err">{{ error }}</div>{% endif %}
+<form method="post">{% include "_form_fields.html" %}
+<button class="sec" name="action" value="load">Tải kịch bản ban đầu</button>
+{% if step >= 2 %}
+{% if warn %}<div class="warn">{{ warn }}</div>{% endif %}
+<h3>Kịch bản ban đầu <span class="mut">(nguồn: {{ hist.source }})</span></h3>
+{% if hist.source == 'default' %}<div class="warn">Không có dữ liệu cho cửa hàng/ngày này; dùng giá trị mặc định (Promo=0, không lễ). Bạn có thể chỉnh lại bên dưới.</div>{% endif %}
+{% if hist.open == 0 %}<div class="warn">Dữ liệu cho thấy cửa hàng ĐÓNG CỬA ngày này; dự báo giả định cửa hàng mở.</div>{% endif %}
+<div class="grid">
+<div><label>Promo ban đầu</label><select name="promo"><option value="0" {{ 'selected' if vals.promo=='0' }}>0</option><option value="1" {{ 'selected' if vals.promo=='1' }}>1</option></select></div>
+<div><label>StateHoliday ban đầu</label><select name="state_holiday">{% for k,v in holidays.items() %}<option value="{{k}}" {{ 'selected' if vals.state_holiday==k }}>{{k}} – {{v}}</option>{% endfor %}</select></div>
+<div><label>SchoolHoliday (giữ nguyên)</label><select name="school_holiday"><option value="0" {{ 'selected' if vals.school_holiday=='0' }}>0</option><option value="1" {{ 'selected' if vals.school_holiday=='1' }}>1</option></select></div></div>
+<h3>Kịch bản What-if</h3><div class="grid">
+<div><label>Promo mới</label><select name="new_promo"><option value="0" {{ 'selected' if vals.new_promo=='0' }}>0 – Không khuyến mãi</option><option value="1" {{ 'selected' if vals.new_promo=='1' }}>1 – Có khuyến mãi</option></select></div>
+<div><label>StateHoliday mới</label><select name="new_holiday">{% for k,v in holidays.items() %}<option value="{{k}}" {{ 'selected' if vals.new_holiday==k }}>{{k}} – {{v}}</option>{% endfor %}</select></div></div>
+<button name="action" value="run">Mô phỏng kịch bản (Run What-if)</button>{% endif %}</form></div>
+{% if step == 3 %}<div class="card"><h2>So sánh kết quả</h2>
+{% if info.stand_in %}<div class="warn">Đang dùng mô hình thay thế ({{ info.algo }}), không phải XGBoost.</div>{% endif %}
+{% for n in res.notes %}<div class="warn">{{ n }}</div>{% endfor %}
+<table><tr><th>Chỉ tiêu</th><th>Kịch bản ban đầu</th><th>Kịch bản What-if</th></tr>
+<tr><td>Cửa hàng / ngày</td><td colspan="2">{{ res.base.store }} / {{ res.base.date.date() }}</td></tr>
+<tr><td>Promo</td><td>{{ res.base.promo }}</td><td>{{ res.new.promo }}</td></tr>
+<tr><td>StateHoliday</td><td>{{ res.base.state_holiday }}</td><td>{{ res.new.state_holiday }}</td></tr>
+<tr><td>Doanh thu dự báo</td><td>{{ res.base_sales | eur }}</td><td>{{ res.new_sales | eur }}</td></tr>
+<tr><td>Chênh lệch doanh thu</td><td colspan="2"><b>{{ res.diff | eur_signed }}</b></td></tr>
+<tr><td>Tỷ lệ thay đổi</td><td colspan="2"><b>{{ res.pct | pct }}</b></td></tr></table>
+<img class="chart" src="data:image/png;base64,{{ chart }}">
+<h3>So sánh 4 kịch bản</h3><img class="chart" src="data:image/png;base64,{{ four_chart }}">
+<table><tr><th>Kịch bản</th><th>Promo</th><th>StateHoliday</th><th>Doanh thu dự báo</th><th>Chênh lệch so với KB1</th><th>%</th></tr>
+{% for r in four %}<tr><td>{{ r.label }}</td><td>{{ r.promo }}</td><td>{{ r.state_holiday }}</td><td>{{ r.sales | eur }}</td><td>{{ r.diff_vs_kb1 | eur_signed }}</td><td>{{ r.pct_vs_kb1 | pct }}</td></tr>{% endfor %}</table>
+<div class="warn"><b>Lưu ý diễn giải:</b> What-if cho biết dự báo của mô hình thay đổi thế nào khi đổi đầu vào, <b>không chứng minh</b> khuyến mãi hoặc ngày lễ gây ra mức thay đổi đó (không phải quan hệ nhân quả). Dữ liệu ngày lễ có doanh thu rất ít (a: 694, b: 145, c: 71 dòng huấn luyện) nên kết quả theo ngày lễ có độ tin cậy thấp.</div></div>{% endif %}
+{% endblock %}

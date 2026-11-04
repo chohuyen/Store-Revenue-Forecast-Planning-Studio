@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% block body %}
+<div class="card"><h2>So sánh mô hình (kết quả của nhóm – outputs/results/model_comparison.csv)</h2>
+{% if comp %}{{ comp | safe }}{% endif %}
+<p class="mut">Đây là số liệu thực nghiệm đã có của nhóm; ứng dụng chỉ hiển thị, không tạo lại.</p></div>
+{% if run %}<div class="card"><h2>Lần chạy gần nhất của src/models/train.py</h2>{{ run | safe }}
+<p class="mut">Hai baseline khớp số liệu của nhóm; dòng thứ ba là thuật toán của lần huấn luyện vừa chạy.</p></div>{% endif %}
+{% for t,df in [('Sai số theo Promo', by_promo), ('Sai số theo thứ trong tuần', by_dow), ('Sai số theo StoreType', by_type)] %}{% if df %}
+<div class="card"><h2>{{ t }}</h2>{{ df | safe }}</div>{% endif %}{% endfor %}
+<div class="card"><h2>Biểu đồ (từ thực nghiệm Chương 4)</h2>{% for f in figs %}<p><img class="chart" src="/figures/{{ f }}" alt="{{ f }}"><br><span class="mut">{{ f }}</span></p>{% endfor %}</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}{% block body %}
+<div class="card"><h2>Dự báo doanh thu cửa hàng</h2>
+{% if error %}<div class="err">{{ error }}</div>{% endif %}
+<form method="post">{% include "_form_fields.html" %}
+<div class="grid">
+<div><label>Khuyến mãi (Promo)</label><select name="promo"><option value="0" {{ 'selected' if vals.promo=='0' }}>0 – Không khuyến mãi</option><option value="1" {{ 'selected' if vals.promo=='1' }}>1 – Có khuyến mãi</option></select></div>
+<div><label>Ngày lễ (StateHoliday)</label><select name="state_holiday">{% for k,v in holidays.items() %}<option value="{{k}}" {{ 'selected' if vals.state_holiday==k }}>{{k}} – {{v}}</option>{% endfor %}</select></div>
+<div><label>Nghỉ học (SchoolHoliday)</label><select name="school_holiday"><option value="0" {{ 'selected' if vals.school_holiday=='0' }}>0 – Không</option><option value="1" {{ 'selected' if vals.school_holiday=='1' }}>1 – Có</option></select></div></div>
+<button type="submit">Chạy dự báo</button></form></div>
+{% if result is defined %}<div class="card"><h2>Kết quả</h2>
+{% if warn %}<div class="warn">{{ warn }}</div>{% endif %}
+{% if info.stand_in %}<div class="warn">Đang dùng mô hình thay thế ({{ info.algo }}), không phải XGBoost.</div>{% endif %}
+<div class="big">{{ result | eur }}</div><p class="mut">Doanh thu dự báo của cửa hàng {{ scenario.store }} ngày {{ scenario.date.date() }} — <b>giả định cửa hàng mở cửa</b>.</p>
+{% if hist.open == 0 %}<div class="warn">Dữ liệu cho thấy cửa hàng này ĐÓNG CỬA ngày đó; dự báo chỉ có ý nghĩa nếu cửa hàng mở.</div>{% endif %}
+{% if hist.actual_sales is not none %}<p>Doanh thu thực tế trong dữ liệu: <b>{{ hist.actual_sales | eur }}</b></p>{% endif %}
+{% if chart %}<img class="chart" src="data:image/png;base64,{{ chart }}">{% endif %}
+<h3>Thông tin đầu vào được mô hình sử dụng</h3>
+<table><tr>{% for k in feats %}<th>{{ k }}</th>{% endfor %}</tr><tr>{% for v in feats.values() %}<td>{{ v }}</td>{% endfor %}</tr></table></div>{% endif %}
+{% endblock %}

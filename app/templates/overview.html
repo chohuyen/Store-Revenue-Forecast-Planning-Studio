@@ -1,0 +1,24 @@
+{% extends "base.html" %}{% block body %}
+<div class="card"><h2>Mục tiêu hệ thống</h2>
+<p>Hỗ trợ nhà quản lý <b>dự báo doanh thu theo ngày của từng cửa hàng Rossmann</b>, so sánh mô hình, xem sai số và <b>thử kịch bản khuyến mãi / ngày lễ (What-if)</b> để lập kế hoạch kinh doanh.</p>
+<ul><li><b>Dự báo doanh thu</b>: chọn cửa hàng, ngày, khuyến mãi, ngày lễ → doanh thu dự báo bằng mô hình đã huấn luyện.</li>
+<li><b>What-if Scenario</b>: đổi Promo/StateHoliday, giữ nguyên các đầu vào khác, so sánh với kịch bản ban đầu.</li>
+<li><b>Phân tích kết quả</b>: so sánh mô hình (RMSPE, MAE, RMSE), phân tích sai số, SHAP/LIME từ kết quả thực nghiệm.</li></ul></div>
+<div class="card"><h2>Mô hình đang nạp</h2>
+{% if info.error %}<div class="err">{{ info.error }}</div>{% else %}
+<p>Thuật toán: <b>{{ info.algo }}</b> · {{ info.features }} đặc trưng · huấn luyện lúc {{ info.trained_at }} ·
+Phân biệt loại ngày lễ a/b/c: <b>{{ 'Có' if info.supports_holiday_type else 'Không (chỉ có/không có ngày lễ)' }}</b></p>
+{% if info.stand_in %}<div class="warn">Đây là <b>mô hình thay thế (HistGradientBoosting)</b> dùng để chạy thử khi chưa có XGBoost. Kết quả KHÔNG phải của XGBoost trong báo cáo. Chạy <code>python -m src.models.train --algo xgboost</code> để tạo mô hình thật.</div>{% endif %}{% endif %}</div>
+<div class="card"><h2>Thông tin dữ liệu</h2>
+<p>Rossmann Store Sales (Kaggle): 1.115 cửa hàng, 01/01/2013 – 31/07/2015 (train), dự báo 01/08 – 17/09/2015 (test, không có nhãn). Sau khi loại ngày đóng cửa và doanh thu = 0: 844.338 dòng. {% if n_hist %}Đang nạp {{ '{:,}'.format(n_hist).replace(',', '.') }} dòng lịch sử.{% endif %}</p>
+{% if kpi %}<div class="kpi">
+<div>Doanh thu lịch sử<b>{{ kpi.historical_sales_musd }} triệu $</b></div>
+<div>Doanh thu dự báo (XGBoost, Test)<b>{{ kpi.forecast_sales_musd }} triệu</b></div>
+<div>Doanh thu thực tế (Test)<b>{{ kpi.actual_sales_musd }} triệu</b></div>
+<div>Chênh lệch<b>{{ kpi.gap_pct }}%</b></div></div>
+<p class="mut">KPI lấy từ outputs/results/dashboard_kpi.json (kết quả thực nghiệm của nhóm).</p>{% endif %}
+{% if chart %}<img class="chart" src="data:image/png;base64,{{ chart }}">{% endif %}</div>
+{% if comp %}<div class="card"><h2>So sánh mô hình (kết quả thực nghiệm của nhóm)</h2>
+{{ comp | safe }}
+<p class="mut">Trên Test, XGBoost có MAE/RMSE thấp nhất nhưng RMSPE (0,1485) chưa thấp hơn Baseline A (0,1475).</p></div>{% endif %}
+{% endblock %}
