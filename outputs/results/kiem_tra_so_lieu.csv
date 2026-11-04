@@ -1,0 +1,11 @@
+﻿chi_tieu,gia_tri
+XGB vs Baseline A – Val RMSPE (%),-8.3389
+XGB vs Baseline A – Test RMSPE (%),0.6562
+XGB vs Baseline A – Test MAE (%),-4.2464
+XGB vs Baseline A – Test RMSE (%),-6.5937
+XGB vs LightGBM – Test RMSPE (%),-6.6048
+XGB Val->Test RMSPE (điểm),0.0082
+LightGBM Val->Test RMSPE (điểm),0.0124
+Baseline A Val->Test RMSPE (điểm),-0.0056
+RF vs XGB – Test RMSPE (%),43.446
+Top-10 cửa hàng: tỷ lệ so với phân bổ đều (lần),9.9235

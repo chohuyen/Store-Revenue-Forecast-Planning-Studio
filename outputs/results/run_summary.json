@@ -1,0 +1,10 @@
+{
+ "n_train": 765470,
+ "n_features": 24,
+ "n_val": 37472,
+ "n_test": 41396,
+ "best_model": "XGBoost",
+ "bias_total_pct": 0.88,
+ "share_abs_err_gt10_pct": 41.9,
+ "top10_store_share_sq_err_pct": 8.9
+}
