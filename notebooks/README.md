@@ -1,0 +1,1 @@
+`TEST DATA.ipynb` là notebook gốc của nhóm, được giữ NGUYÊN (chạy trên Colab, có dùng Google Drive). Mã đã được tách thành `src/` để chạy trên máy cục bộ; xem `docs/kiem_tra_notebook.md` để biết các điểm đã rà soát.
