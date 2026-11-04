@@ -1,0 +1,19 @@
+# Dữ liệu gốc Kaggle (nặng, có điều khoản riêng) - tải lại theo README
+data/raw/
+data/processed/
+*.zip
+# Mô hình lớn có thể tạo lại bằng src.models.train (bỏ dòng dưới nếu muốn đưa mô hình lên GitHub)
+models/*.joblib
+# Python / IDE
+__pycache__/
+*.pyc
+.venv/
+venv/
+.idea/
+.vscode/
+.ipynb_checkpoints/
+# Bí mật - KHÔNG bao giờ commit
+.env
+*.key
+*token*
+credentials*.json

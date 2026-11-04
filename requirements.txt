@@ -1,0 +1,10 @@
+# Python 3.10 - 3.12. Cài: pip install -r requirements.txt
+numpy>=1.26
+pandas>=2.1
+scikit-learn>=1.3
+joblib>=1.3
+xgboost>=2.0        # mô hình chính của đồ án
+lightgbm>=4.0       # mô hình so sánh (tùy chọn khi huấn luyện --algo lightgbm)
+matplotlib>=3.8
+Flask>=3.0
+openpyxl>=3.1       # đọc/ghi file Excel (QA, checklist)
